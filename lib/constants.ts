@@ -1,0 +1,161 @@
+import { ModelDefinition, AspectRatioOption, ActiveLora } from './types';
+
+export const VIDEO_MODELS: ModelDefinition[] = [
+  {
+    id: 'wan-2.1-14b',
+    name: 'Wan 2.1 (14B High Quality)',
+    modality: 'video',
+    version: 'v2.1',
+    vramRequirement: '12GB+ (or mmgp 6GB)',
+    badge: 'Flagship',
+    description: 'DeepBeepMeep state-of-the-art 14B diffusion transformer with breathtaking temporal consistency & photorealism.',
+    defaultSteps: 30,
+    maxFps: 30,
+  },
+  {
+    id: 'wan-2.1-1.3b',
+    name: 'Wan 2.1 (1.3B Ultra Fast)',
+    modality: 'video',
+    version: 'v2.1-light',
+    vramRequirement: '4GB - 6GB VRAM',
+    badge: 'GPU Poor Friendly',
+    description: 'Blazing fast light diffusion model designed for RTX 10xx/20xx/30xx and consumer hardware with instant iteration.',
+    defaultSteps: 25,
+    maxFps: 24,
+  },
+  {
+    id: 'hunyuan-video-1.5',
+    name: 'HunyuanVideo 1.5',
+    modality: 'video',
+    version: 'v1.5',
+    vramRequirement: '10GB+',
+    badge: 'Cinematic',
+    description: 'High-fidelity video transformer optimized for fluid physics, cinematic lighting, and wide dynamic range.',
+    defaultSteps: 35,
+    maxFps: 24,
+  },
+  {
+    id: 'minimax-h3',
+    name: 'MiniMax H3 Video',
+    modality: 'video',
+    version: 'H3-Ref2VA',
+    vramRequirement: '8GB+',
+    badge: 'Multi-Ref',
+    description: 'Advanced reference-guided video generator with support for multi-image and audio-driven frame synthesis.',
+    defaultSteps: 28,
+    maxFps: 24,
+  },
+  {
+    id: 'ltx-video-2',
+    name: 'LTX-Video 2.0',
+    modality: 'video',
+    version: '2.0',
+    vramRequirement: '6GB+',
+    badge: 'Real-Time',
+    description: 'Low-latency diffusion video model capable of rapid 4K-upscaled animations and sliding-window generation.',
+    defaultSteps: 20,
+    maxFps: 25,
+  },
+];
+
+export const IMAGE_MODELS: ModelDefinition[] = [
+  {
+    id: 'flux-1-schnell',
+    name: 'Flux.1 Schnell',
+    modality: 'image',
+    version: '1.0',
+    vramRequirement: '6GB+',
+    badge: 'Speed King',
+    description: '4-step distilled high-detail foundation model by Black Forest Labs with unparalleled prompt fidelity.',
+    defaultSteps: 4,
+  },
+  {
+    id: 'flux-1-dev',
+    name: 'Flux.1 Dev',
+    modality: 'image',
+    version: '1.0-dev',
+    vramRequirement: '12GB+',
+    badge: 'Masterpiece',
+    description: 'Uncompromising image generation with exceptional typography rendering and photorealistic anatomy.',
+    defaultSteps: 28,
+  },
+  {
+    id: 'qwen-image',
+    name: 'Qwen Image Ultra',
+    modality: 'image',
+    version: 'v2',
+    vramRequirement: '8GB+',
+    badge: 'Multi-lingual',
+    description: 'Specialized in intricate compositions, text-to-graphics, and complex spatial object arrangements.',
+    defaultSteps: 30,
+  },
+  {
+    id: 'krea-2',
+    name: 'Krea 2 Studio',
+    modality: 'image',
+    version: '2.0',
+    vramRequirement: '6GB+',
+    badge: 'Artistic',
+    description: 'Stylized and aesthetic concept artist model with identity-preserving layers.',
+    defaultSteps: 24,
+  },
+];
+
+export const AUDIO_MODELS: ModelDefinition[] = [
+  {
+    id: 'qwen3-tts',
+    name: 'Qwen3 TTS & Voice',
+    modality: 'audio',
+    version: '3.0',
+    vramRequirement: '4GB+',
+    badge: 'Natural Voice',
+    description: 'Human-like conversational text-to-speech with emotional inflections and pacing controls.',
+    defaultSteps: 20,
+  },
+  {
+    id: 'minimax-voice-clone',
+    name: 'MiniMax Voice Clone H3',
+    modality: 'audio',
+    version: 'H3-Clone',
+    vramRequirement: '6GB+',
+    badge: 'Clone Engine',
+    description: 'Zero-shot 3-second reference voice cloning with pitch and timbre matching.',
+    defaultSteps: 25,
+  },
+  {
+    id: 'stable-audio-3',
+    name: 'Stable Audio & MMAudio',
+    modality: 'audio',
+    version: '3.0',
+    vramRequirement: '6GB+',
+    badge: 'Soundtrack',
+    description: 'Generates cinematic sound effects, atmospheric ambiences, and full synchronized musical scores for videos.',
+    defaultSteps: 30,
+  },
+];
+
+export const ASPECT_RATIOS: AspectRatioOption[] = [
+  { id: '16:9', label: '16:9 Landscape (YouTube / Desktop)', ratio: '16:9', width: 1280, height: 720, iconName: 'landscape' },
+  { id: '9:16', label: '9:16 Vertical (Reels / TikTok / Shorts)', ratio: '9:16', width: 720, height: 1280, iconName: 'portrait' },
+  { id: '1:1', label: '1:1 Square (Instagram / Avatars)', ratio: '1:1', width: 1024, height: 1024, iconName: 'square' },
+  { id: '4:3', label: '4:3 Classic TV', ratio: '4:3', width: 960, height: 720, iconName: 'landscape' },
+  { id: '21:9', label: '21:9 Cinematic Ultrawide', ratio: '21:9', width: 1344, height: 576, iconName: 'ultrawide' },
+];
+
+export const POPULAR_LORAS: ActiveLora[] = [
+  { id: 'cinematic-film', name: 'Cinematic 35mm Grain', triggerWord: 'cinematic 35mm kodak portra 400', weight: 0.85, category: 'Aesthetic' },
+  { id: 'cyberpunk-neon', name: 'Cyberpunk Neo-Tokyo', triggerWord: 'neon glowing cyberpunk dark alleys futuristic', weight: 0.8, category: 'Style' },
+  { id: 'anime-vibrant', name: 'Makoto Shinkai Anime', triggerWord: 'shinkai anime style breathtaking sky cloudscape', weight: 0.75, category: 'Anime' },
+  { id: 'photoreal-portrait', name: 'Raw Candid Photorealism', triggerWord: 'raw candid realistic shot uncompressed natural lighting', weight: 0.9, category: 'Realism' },
+  { id: 'vintage-vhs', name: 'Vintage 90s VHS Camcorder', triggerWord: 'vhs tape aesthetic tracking lines 1990s home video', weight: 0.7, category: 'Retro' },
+  { id: 'slowmo-fluid', name: 'Hyper Slow-Motion Fluid Dynamics', triggerWord: '1000fps slow-motion water droplets splash macro lens', weight: 0.85, category: 'Motion' },
+];
+
+export const PROMPT_STYLES = [
+  { label: '🎬 Cinematic', tag: '8k resolution, cinematic lighting, shallow depth of field, anamorphic lens, highly detailed' },
+  { label: '📸 Photorealistic', tag: 'photorealistic, shot on 35mm lens, f/1.8, natural soft shadows, master photography' },
+  { label: '🌌 Sci-Fi Cyberpunk', tag: 'cyberpunk aesthetic, volumetric neon lighting, octane render, intricate mechanical details' },
+  { label: '🌸 Anime Studio', tag: 'masterpiece anime key visual, vibrant pastel colors, dynamic angle, dramatic lighting' },
+  { label: '🎨 Oil Painting', tag: 'textured impasto oil on canvas, expressive brush strokes, chiaroscuro lighting' },
+  { label: '⚡ Hyper-Speed Motion', tag: 'kinetic camera whip-pan, motion blur accents, dramatic action framing, adrenaline rush' },
+];
