@@ -21,7 +21,7 @@ export const INITIAL_GALLERY_ITEMS: GenerationJob[] = [
     loras: [
       { id: 'cinematic-film', name: 'Cinematic 35mm Grain', triggerWord: 'cinematic 35mm', weight: 0.8, category: 'Aesthetic' }
     ],
-    resultUrl: 'https://assets.mixkit.co/videos/preview/mixkit-futuristic-robotic-arm-working-in-a-laboratory-41484-large.mp4',
+    resultUrl: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4',
     thumbnailUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1280&q=80',
     createdAt: Date.now() - 1000 * 60 * 32,
     completedAt: Date.now() - 1000 * 60 * 30,
@@ -46,7 +46,7 @@ export const INITIAL_GALLERY_ITEMS: GenerationJob[] = [
     loras: [
       { id: 'cyberpunk-neon', name: 'Cyberpunk Neo-Tokyo', triggerWord: 'neon glowing cyberpunk', weight: 0.85, category: 'Style' }
     ],
-    resultUrl: 'https://assets.mixkit.co/videos/preview/mixkit-tunnel-of-futuristic-neon-lights-41551-large.mp4',
+    resultUrl: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/friday.mp4',
     thumbnailUrl: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=720&q=80',
     createdAt: Date.now() - 1000 * 60 * 55,
     completedAt: Date.now() - 1000 * 60 * 52,
@@ -69,7 +69,7 @@ export const INITIAL_GALLERY_ITEMS: GenerationJob[] = [
     duration: 5,
     aspectRatio: '16:9',
     loras: [],
-    resultUrl: 'https://assets.mixkit.co/videos/preview/mixkit-traveling-through-a-futuristic-tunnel-with-blue-neon-lights-41549-large.mp4',
+    resultUrl: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4',
     thumbnailUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1280&q=80',
     createdAt: Date.now() - 1000 * 60 * 120,
     completedAt: Date.now() - 1000 * 60 * 115,

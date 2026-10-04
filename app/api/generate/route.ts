@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 const DEMO_VIDEOS = [
-  'https://assets.mixkit.co/videos/preview/mixkit-futuristic-robotic-arm-working-in-a-laboratory-41484-large.mp4',
-  'https://assets.mixkit.co/videos/preview/mixkit-tunnel-of-futuristic-neon-lights-41551-large.mp4',
-  'https://assets.mixkit.co/videos/preview/mixkit-traveling-through-a-futuristic-tunnel-with-blue-neon-lights-41549-large.mp4',
-  'https://assets.mixkit.co/videos/preview/mixkit-circuit-board-with-glowing-light-tracks-41553-large.mp4',
-  'https://assets.mixkit.co/videos/preview/mixkit-hands-holding-a-smartphone-with-a-green-screen-41555-large.mp4',
+  'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4',
+  'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/friday.mp4',
+  'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4',
+  'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/friday.mp4',
 ];
 
 const DEMO_IMAGES = [

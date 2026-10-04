@@ -18,6 +18,7 @@ import {
 } from '@/lib/storage';
 import { GenerationJob, ActiveLora, SettingsConfig } from '@/lib/types';
 import { POPULAR_LORAS } from '@/lib/constants';
+import { synthesizeVideo } from '@/lib/videoSynthesizer';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<string>('video');
@@ -26,6 +27,7 @@ export default function Home() {
   const [settings, setSettings] = useState<SettingsConfig>(getStoredSettings());
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [selectedGalleryJobId, setSelectedGalleryJobId] = useState<string | null>(null);
+  const [currentGeneratingJobId, setCurrentGeneratingJobId] = useState<string | null>(null);
 
   // Load persisted data on mount
   useEffect(() => {
@@ -40,7 +42,7 @@ export default function Home() {
     }
   }, [jobs]);
 
-  // Queue runner simulation / cloud trigger
+  // Queue runner & video synthesizer
   const enqueueJob = async (
     jobData: Omit<GenerationJob, 'id' | 'createdAt' | 'status' | 'progress' | 'currentStep' | 'totalSteps'>
   ) => {
@@ -56,30 +58,78 @@ export default function Home() {
     };
 
     setJobs((prev) => [newJob, ...prev]);
-    setActiveTab('queue');
+    setCurrentGeneratingJobId(newJob.id);
 
-    // Start execution simulation or dispatch
+    // If user is NOT in video studio (e.g. image studio), let them view in queue
+    if (newJob.modality !== 'video') {
+      setActiveTab('queue');
+    }
+
     setTimeout(() => {
-      runJobExecution(newJob.id, totalSteps);
-    }, 400);
+      executeJob(newJob, totalSteps);
+    }, 150);
   };
 
-  const runJobExecution = async (jobId: string, totalSteps: number) => {
+  const executeJob = async (job: GenerationJob, totalSteps: number) => {
+    // Mark as processing
     setJobs((prev) =>
-      prev.map((j) => (j.id === jobId ? { ...j, status: 'processing' } : j))
+      prev.map((j) => (j.id === job.id ? { ...j, status: 'processing', progress: 5, currentStep: 1 } : j))
     );
 
-    // Call API for assets or parameters
+    // If Video modality and in Demo/Web mode, synthesize a real client-side video!
+    if (job.modality === 'video' && settings.backendMode !== 'local_wan2gp' && settings.backendMode !== 'cloud_fal') {
+      try {
+        const { videoUrl, thumbnailUrl } = await synthesizeVideo(
+          job.prompt,
+          job.width || 720,
+          job.height || 480,
+          job.duration || 4,
+          job.fps || 24,
+          (progress, step, total) => {
+            setJobs((prev) =>
+              prev.map((j) => {
+                if (j.id === job.id) {
+                  return { ...j, progress, currentStep: step, totalSteps: total };
+                }
+                return j;
+              })
+            );
+          }
+        );
+
+        setJobs((prev) =>
+          prev.map((j) => {
+            if (j.id === job.id) {
+              return {
+                ...j,
+                status: 'completed',
+                progress: 100,
+                currentStep: totalSteps,
+                completedAt: Date.now(),
+                resultUrl: videoUrl,
+                thumbnailUrl,
+              };
+            }
+            return j;
+          })
+        );
+        setCurrentGeneratingJobId(null);
+        return;
+      } catch (err) {
+        console.error('Synthesis fallback to API', err);
+      }
+    }
+
+    // Otherwise (Cloud/Local API or Image/Audio)
     let resultPayload: any = null;
     try {
-      const targetJob = jobs.find(j => j.id === jobId);
       const res = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          modality: targetJob?.modality || 'video',
-          prompt: targetJob?.prompt || '',
-          model: targetJob?.model || 'wan-2.1-14b',
+          modality: job.modality,
+          prompt: job.prompt,
+          model: job.model,
           settings,
         }),
       });
@@ -90,7 +140,6 @@ export default function Home() {
       console.error('Generation API error', e);
     }
 
-    // Step-by-step progress simulation
     let currentStep = 1;
     const interval = setInterval(() => {
       currentStep += 1;
@@ -98,12 +147,8 @@ export default function Home() {
 
       setJobs((prev) =>
         prev.map((j) => {
-          if (j.id === jobId) {
-            return {
-              ...j,
-              currentStep,
-              progress,
-            };
+          if (j.id === job.id) {
+            return { ...j, currentStep, progress };
           }
           return j;
         })
@@ -114,27 +159,31 @@ export default function Home() {
         setTimeout(() => {
           setJobs((prev) =>
             prev.map((j) => {
-              if (j.id === jobId) {
+              if (j.id === job.id) {
                 return {
                   ...j,
                   status: 'completed',
                   progress: 100,
                   currentStep: totalSteps,
                   completedAt: Date.now(),
-                  resultUrl: resultPayload?.resultUrl || 'https://assets.mixkit.co/videos/preview/mixkit-futuristic-robotic-arm-working-in-a-laboratory-41484-large.mp4',
+                  resultUrl: resultPayload?.resultUrl || 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4',
                   thumbnailUrl: resultPayload?.thumbnailUrl || 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1280&q=80',
                 };
               }
               return j;
             })
           );
-        }, 300);
+          setCurrentGeneratingJobId(null);
+        }, 200);
       }
-    }, 280);
+    }, 200);
   };
 
   const handleCancelJob = (id: string) => {
     setJobs((prev) => prev.filter((j) => j.id !== id));
+    if (currentGeneratingJobId === id) {
+      setCurrentGeneratingJobId(null);
+    }
   };
 
   const handleClearHistory = () => {
@@ -167,6 +216,11 @@ export default function Home() {
     (j) => j.status === 'processing' || j.status === 'queued'
   ).length;
 
+  const currentGeneratingJob = jobs.find((j) => j.id === currentGeneratingJobId) || null;
+  const completedVideoJobs = jobs.filter(
+    (j) => j.modality === 'video' && j.status === 'completed' && j.resultUrl
+  );
+
   return (
     <div className="min-h-screen flex flex-col bg-[#08090d]">
       <Navbar
@@ -183,6 +237,8 @@ export default function Home() {
             onEnqueueJob={enqueueJob}
             activeLoras={activeLoras}
             setActiveTab={setActiveTab}
+            currentGeneratingJob={currentGeneratingJob}
+            completedVideoJobs={completedVideoJobs}
           />
         )}
 
