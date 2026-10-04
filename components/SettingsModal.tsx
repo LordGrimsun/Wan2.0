@@ -156,16 +156,37 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 </button>
               </div>
 
+              <div className="rounded-xl border border-indigo-500/20 bg-indigo-500/10 p-3 space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                    <Zap className="h-3.5 w-3.5 text-cyan-400" />
+                    <span>No Nvidia GPU? Run on Free Colab GPU!</span>
+                  </span>
+                  <a
+                    href="https://colab.research.google.com/github/LordGrimsun/Wan2.0/blob/main/Wan2_0_Colab_Free_GPU.ipynb"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-1 text-[11px] font-bold text-cyan-400 hover:underline"
+                  >
+                    <span>Open Colab (1-Click)</span>
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
+                </div>
+                <p className="text-[11px] text-slate-300">
+                  Run Wan 2.1 on Google's free 16GB Tesla T4 GPU, copy your public tunnel URL (e.g. <code className="text-indigo-300">https://*.gradio.live</code>), and paste it above!
+                </p>
+              </div>
+
               {testResult === 'success' && (
                 <div className="flex items-center gap-1.5 text-xs text-emerald-400">
                   <Check className="h-3.5 w-3.5" />
-                  <span>Successfully connected to Wan2GP local runner!</span>
+                  <span>Successfully connected to Wan2GP runner!</span>
                 </div>
               )}
               {testResult === 'error' && (
                 <div className="flex items-center gap-1.5 text-xs text-amber-400">
                   <AlertCircle className="h-3.5 w-3.5" />
-                  <span>Could not reach local server. Ensure `python wgp.py` is running.</span>
+                  <span>Could not reach URL. Ensure `python wgp.py` or the Colab notebook is running.</span>
                 </div>
               )}
             </div>

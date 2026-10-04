@@ -1,6 +1,7 @@
 # Wan 2.0 Studio 🎬
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/LordGrimsun/Wan2.0)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LordGrimsun/Wan2.0/blob/main/Wan2_0_Colab_Free_GPU.ipynb)
 [![GitHub stars](https://img.shields.io/github/stars/LordGrimsun/Wan2.0?style=social)](https://github.com/LordGrimsun/Wan2.0)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
