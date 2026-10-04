@@ -33,8 +33,13 @@ export async function synthesizeVideo(
 
   // Determine aesthetic palette based on prompt
   const lower = prompt.toLowerCase();
+  const isAd = lower.includes('ad') || lower.includes('commercial') || lower.includes('bag') || 
+               lower.includes('handbag') || lower.includes('luxury') || lower.includes('fashion') ||
+               lower.includes('perfume') || lower.includes('product');
+
   let baseHue = 240; // Default Indigo/Cyber
-  if (lower.includes('sunset') || lower.includes('fire') || lower.includes('gold')) baseHue = 25;
+  if (isAd) baseHue = 38; // Luxury Champagne / Gold
+  else if (lower.includes('sunset') || lower.includes('fire') || lower.includes('gold')) baseHue = 25;
   else if (lower.includes('nature') || lower.includes('forest') || lower.includes('emerald')) baseHue = 140;
   else if (lower.includes('neon') || lower.includes('cyberpunk') || lower.includes('tokyo')) baseHue = 280;
   else if (lower.includes('ocean') || lower.includes('water') || lower.includes('ice') || lower.includes('snow')) baseHue = 200;
@@ -149,6 +154,93 @@ export async function synthesizeVideo(
           ctx.fill();
         }
         ctx.restore();
+
+        // Product commercial ad special rendering
+        if (isAd) {
+          ctx.save();
+          const pedX = renderW / 2;
+          const pedY = renderH * 0.72;
+
+          // Pedestal Oval
+          ctx.beginPath();
+          ctx.ellipse(pedX, pedY, renderW * 0.28, renderH * 0.08, 0, 0, Math.PI * 2);
+          const pedGrad = ctx.createLinearGradient(pedX - 100, pedY, pedX + 100, pedY);
+          pedGrad.addColorStop(0, 'rgba(40, 42, 55, 0.9)');
+          pedGrad.addColorStop(0.5, 'rgba(120, 115, 140, 0.95)');
+          pedGrad.addColorStop(1, 'rgba(30, 32, 45, 0.9)');
+          ctx.fillStyle = pedGrad;
+          ctx.fill();
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = 'rgba(212, 175, 55, 0.8)';
+          ctx.stroke();
+
+          // Handbag Turn
+          const bagX = pedX;
+          const bagY = pedY - renderH * 0.16;
+          const rotationAngle = Math.sin(t * Math.PI * 2) * 0.12;
+
+          ctx.translate(bagX, bagY);
+          ctx.rotate(rotationAngle);
+
+          // Shadow on pedestal
+          ctx.beginPath();
+          ctx.ellipse(0, renderH * 0.14, renderW * 0.14, renderH * 0.03, 0, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+          ctx.fill();
+
+          // Handbag Body
+          const bw = renderW * 0.14;
+          const bh = renderH * 0.18;
+          ctx.beginPath();
+          if (ctx.roundRect) {
+            ctx.roundRect(-bw, -bh / 2, bw * 2, bh, [10, 10, 4, 4]);
+          } else {
+            ctx.rect(-bw, -bh / 2, bw * 2, bh);
+          }
+          const bagGrad = ctx.createLinearGradient(-bw, -bh, bw, bh);
+          bagGrad.addColorStop(0, 'rgba(35, 25, 20, 0.95)');
+          bagGrad.addColorStop(0.4, 'rgba(95, 62, 45, 0.95)');
+          bagGrad.addColorStop(0.7, 'rgba(145, 95, 60, 0.95)');
+          bagGrad.addColorStop(1, 'rgba(28, 20, 16, 0.95)');
+          ctx.fillStyle = bagGrad;
+          ctx.fill();
+          ctx.lineWidth = 1.5;
+          ctx.strokeStyle = 'rgba(218, 165, 32, 0.7)';
+          ctx.stroke();
+
+          // Gold Buckle / Clasp
+          ctx.beginPath();
+          ctx.arc(0, 0, 8, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(255, 215, 0, 0.95)';
+          ctx.fill();
+          ctx.lineWidth = 1.5;
+          ctx.strokeStyle = '#fff';
+          ctx.stroke();
+
+          // Handbag Handle / Strap
+          ctx.beginPath();
+          ctx.ellipse(0, -bh / 2 - 14, bw * 0.55, bh * 0.35, 0, Math.PI, 0);
+          ctx.lineWidth = 5;
+          ctx.strokeStyle = 'rgba(218, 165, 32, 0.9)';
+          ctx.stroke();
+
+          // Light sweep glint
+          const glintX = Math.sin(t * Math.PI * 2) * bw * 1.5;
+          const glintGrad = ctx.createRadialGradient(glintX, 0, 2, glintX, 0, 25);
+          glintGrad.addColorStop(0, 'rgba(255, 255, 255, 0.85)');
+          glintGrad.addColorStop(0.4, 'rgba(255, 220, 100, 0.4)');
+          glintGrad.addColorStop(1, 'transparent');
+          ctx.fillStyle = glintGrad;
+          ctx.fillRect(-bw, -bh / 2, bw * 2, bh);
+
+          ctx.restore();
+
+          // Luxury Header Tag
+          ctx.fillStyle = 'rgba(212, 175, 55, 0.95)';
+          ctx.font = 'bold 11px monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText('HAUTE COUTURE • LUXURY COMMERCIAL AD', renderW / 2, 36);
+        }
 
         // Cinematic Vignette
         const vignette = ctx.createRadialGradient(
